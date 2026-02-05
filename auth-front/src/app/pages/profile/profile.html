@@ -1,0 +1,96 @@
+<div class="shell">
+  <div class="container">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div>
+        <h1 class="title">Profil</h1>
+        <p class="subtitle">Gère tes informations de compte et ta session.</p>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-danger" (click)="logout()">Se déconnecter</button>
+      </div>
+    </div>
+
+    <!-- HERO CARD -->
+    <div class="card">
+      <div class="hero" *ngIf="!loading && user; else heroSkeleton">
+        <div class="avatar">
+           <img *ngIf="user?.avatar; else noImg" [src]="user.avatar" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:16px;" />
+           <ng-template #noImg>{{ initial }}</ng-template>
+        </div>
+
+        <div class="hero-meta">
+          <p class="name">{{ displayName }}</p>
+          <p class="email">{{ user.email }}</p>
+        </div>
+
+        <div class="status-pill">
+          <span>●</span>
+          <span>Connecté</span>
+        </div>
+      </div>
+
+      <ng-template #heroSkeleton>
+        <div class="hero">
+          <div class="avatar skeleton"></div>
+          <div class="hero-meta" style="width:100%">
+            <div class="skeleton sk-line"></div>
+            <div class="skeleton sk-line" style="width: 280px; margin-top: 8px;"></div>
+          </div>
+          <div class="skeleton sk-chip"></div>
+        </div>
+      </ng-template>
+
+      <!-- INFO GRID -->
+      <div class="grid" *ngIf="!loading && user; else gridSkeleton">
+        <div class="info">
+          <div class="k">ID</div>
+          <div class="v">{{ user.id }}</div>
+        </div>
+
+        <div class="info">
+          <div class="k">Nom</div>
+          <div class="v">{{ user.name || '—' }}</div>
+        </div>
+
+        <div class="info">
+          <div class="k">Email</div>
+          <div class="v">{{ user.email }}</div>
+        </div>
+      </div>
+
+      <ng-template #gridSkeleton>
+        <div class="grid">
+          <div class="skeleton sk-box"></div>
+          <div class="skeleton sk-box"></div>
+          <div class="skeleton sk-box"></div>
+        </div>
+      </ng-template>
+
+      <!-- ACTIONS -->
+      <div class="row-actions" *ngIf="!loading && user">
+        <button class="btn" (click)="copyId()">Copier l’ID</button>
+        <span class="toast" *ngIf="copied">✅ ID copié</span>
+      </div>
+
+      <div class="hint" *ngIf="!loading && user">
+        Astuce : utilise “Copier l’ID” pour le support ou le debug.
+      </div>
+
+      <!-- ERROR STATE -->
+      <div class="grid" *ngIf="!loading && !user">
+        <div class="info" style="grid-column: 1 / -1;">
+          <div class="k">Erreur</div>
+          <div class="v">Impossible de charger le profil (token invalide ou expiré).</div>
+        </div>
+      </div>
+
+      <div class="row-actions" *ngIf="!loading && !user">
+        <button class="btn btn-primary" (click)="router.navigateByUrl('/login')">Retour login</button>
+      </div>
+    </div>
+
+  </div>
+</div>
