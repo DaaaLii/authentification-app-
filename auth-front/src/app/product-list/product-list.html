@@ -1,0 +1,126 @@
+<div class="mat-elevation-z8 p-4 rounded-xl">
+  <img src="/Logotic.png" alt="Logotic company logo, a professional branding element displayed at the top of the product list management interface" class="w-52 mb-8" />
+  
+  
+  
+  <mat-card class="mb-4 p-4 rounded-xl">
+  <div class="grid gap-3">
+
+    <!-- Ligne 1 : recherche + boutons -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
+      <mat-form-field appearance="outline" class="w-full md:col-span-2">
+        <mat-label>Rechercher (nom)</mat-label>
+        <input
+          matInput
+          [(ngModel)]="search"
+          (keyup.enter)="applyFilters()"
+          placeholder="ex: pc, souris, écran..."
+        />
+        <button mat-icon-button matSuffix type="button" (click)="applyFilters()">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <div class="flex gap-2 justify-end">
+        <button mat-raised-button color="primary" type="button" (click)="applyFilters()">
+          Filtrer
+        </button>
+        <button mat-stroked-button type="button" (click)="resetFilters()">
+          Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- Ligne 2 : 4 champs (min/max prix, min/max stock) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Prix min</mat-label>
+        <input matInput type="number" [(ngModel)]="minPrice" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Prix max</mat-label>
+        <input matInput type="number" [(ngModel)]="maxPrice" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Stock min</mat-label>
+        <input matInput type="number" [(ngModel)]="minStock" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Stock max</mat-label>
+        <input matInput type="number" [(ngModel)]="maxStock" />
+      </mat-form-field>
+    </div>
+
+  </div>
+</mat-card>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <div class="flex justify-end mb-6">
+    <button mat-raised-button color="primary" (click)="addProduct()" class=" justify-center"><mat-icon>add</mat-icon> Ajouter un produit</button>
+  </div>
+  
+  <table mat-table [dataSource]="dataSource">
+    <!-- Position Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> name </th>
+      <td mat-cell *matCellDef="let element"> {{ element.name }} </td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="price">
+      <th mat-header-cell *matHeaderCellDef> price </th>
+      <td mat-cell *matCellDef="let element"> {{ element.price }} </td>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="stock">
+      <th mat-header-cell *matHeaderCellDef> stock </th>
+      <td mat-cell *matCellDef="let element"> {{ element.stock }} </td>
+    </ng-container>
+      <ng-container matColumnDef="actions"> 
+      <th mat-header-cell *matHeaderCellDef class="text-center"> actions </th>
+      <td mat-cell *matCellDef="let element">     
+        <div class="mb-4 flex space-x-1 justify-start flex-wrap gap-2">
+           <button mat-raised-button color="primary" class=" items-center justify-center" (click)="editProduct(element)" ><mat-icon class=" items-center justify-center">edit</mat-icon ></button>
+           <button mat-raised-button color="danger" (click)="deleteProduct(element)" class=" justify-center"><mat-icon>delete</mat-icon></button>
+        </div>    
+    </td>
+    </ng-container>
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator
+  [length]="total()"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[5, 10, 20]"
+  showFirstLastButtons>
+</mat-paginator>
+
+</div>
+
+<div>
+  <button
+               mat-raised-button
+               color="primary"
+               class="w-full !rounded-2xl !h-12"
+               type="button"
+              (click)="goToProfile()"
+              >
+               <mat-icon class="!mr-2">arrow_back</mat-icon>
+                Retour au profil
+              </button>
+</div>

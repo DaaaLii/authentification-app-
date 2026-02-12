@@ -5,6 +5,15 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product, ProductDocument } from './schema/product.schema';
 
+type FindAllQuery = {
+  page: number;
+  limit: number;
+  search: string;
+  minPrice: number;
+  maxPrice: number;
+  minStock: number;
+  maxStock: number;
+};
 @Injectable()
 export class ProductsService {
   constructor(
@@ -15,9 +24,50 @@ export class ProductsService {
     return this.productModel.create(dto);
   }
 
-  findAll() {
-    return this.productModel.find().sort({ createdAt: -1 });
+    async findAll(query: FindAllQuery) {
+    const page = Math.max(1, query.page || 1);
+    const limit = Math.min(100, Math.max(1, query.limit || 5));
+    const skip = (page - 1) * limit;
+
+    const filter: any = {};
+
+    // recherche par nom (q)
+    if (query.search && query.search.trim()) {
+      filter.name = { $regex: query.search.trim(), $options: 'i' };
+    }
+
+    // filtre prix
+    if (query.minPrice !== undefined || query.maxPrice !== undefined) {
+      filter.price = {};
+      if (query.minPrice !== undefined && !Number.isNaN(query.minPrice)) {
+        filter.price.$gte = query.minPrice;
+      }
+      if (query.maxPrice !== undefined && !Number.isNaN(query.maxPrice)) {
+        filter.price.$lte = query.maxPrice;
+      }
+      if (Object.keys(filter.price).length === 0) delete filter.price;
+    }
+
+    // filtre stock
+    if (query.minStock !== undefined || query.maxStock !== undefined) {
+      filter.stock = {};
+      if (query.minStock !== undefined && !Number.isNaN(query.minStock)) {
+        filter.stock.$gte = query.minStock;
+      }
+      if (query.maxStock !== undefined && !Number.isNaN(query.maxStock)) {
+        filter.stock.$lte = query.maxStock;
+      }
+      if (Object.keys(filter.stock).length === 0) delete filter.stock;
+    }
+
+    const [items, total] = await Promise.all([
+      this.productModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      this.productModel.countDocuments(filter),
+    ]);
+
+    return { items, total, page, limit };
   }
+
 
   async findOne(id: string) {
     const product = await this.productModel.findById(id);

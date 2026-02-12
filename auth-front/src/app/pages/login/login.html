@@ -1,0 +1,116 @@
+ <div class="min-h-screen flex items-center justify-center bg-blue-50 px-4">
+      <div class="flex flex-col items-center w-full">
+
+        <!-- LOGO (en dehors) -->
+        <img src="/Logotic.png" alt="authentification" class="w-52 mb-8" />
+
+        <!-- Bandeau info -->
+        <mat-card appearance="outlined" class="mb-6 w-full max-w-md border border-blue-300 bg-blue-50 rounded-xl shadow-none">
+          <div class="flex items-center gap-3 px-4 py-3 text-blue-900">
+            <mat-icon class="text-blue-600 shrink-0" aria-hidden="true">info</mat-icon>
+            <span class="text-sm font-medium leading-5">
+              Vous devez vous connecter pour continuer.
+            </span>
+          </div>
+        </mat-card>
+
+        <!-- Carte login -->
+        <mat-card class="w-full max-w-md rounded-2xl border border-gray-100 shadow-lg">
+          <div class="p-6">
+
+            <!-- Header -->
+            <div class="mb-6 text-center">
+              <h2 class="text-2xl font-medium tracking-tighter text-gray-900">Se connecter</h2>
+              <p class="mt-1 text-sm text-gray-600">
+                Accède à ton espace en quelques secondes.
+              </p>
+            </div>
+
+            <!-- Form -->
+            <div class="space-y-4">
+
+              <!-- Email -->
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Email</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="email"
+                  type="email"
+                  autocomplete="email"
+                  placeholder="ex: you@mail.com"
+                />
+              </mat-form-field>
+
+              <!-- Password -->
+              <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Mot de passe</mat-label>
+                <input
+                  matInput
+                  [(ngModel)]="password"
+                  [type]="showPassword ? 'text' : 'password'"
+                  autocomplete="current-password"
+                  placeholder="••••••••"
+                />
+
+                <!-- bouton oeil -->
+                <button
+                  mat-icon-button
+                  matSuffix
+                  type="button"
+                  (click)="showPassword = !showPassword"
+                  [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+                >
+                  <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </mat-form-field>
+
+              <!-- Submit -->
+              <button
+                mat-raised-button
+                color="primary"
+                class="w-full !h-12 !rounded-xl"
+                (click)="submit()"
+                [disabled]="loading || !email || !password"
+              >
+                {{ loading ? 'Connexion...' : 'Se connecter' }}
+              </button>
+
+              <!-- Error (Material style) -->
+              <mat-card
+                *ngIf="error"
+                appearance="outlined"
+                class="border border-red-200 bg-red-50 rounded-xl"
+              >
+                <div class="flex items-center gap-2 px-4 py-3 text-sm text-red-700">
+                  <mat-icon class="text-red-600">error</mat-icon>
+                  <span>{{ error }}</span>
+                </div>
+              </mat-card>
+
+
+              <div class="my-6 flex items-center gap-3 text-sm text-gray-500">
+  <mat-divider class="flex-1"></mat-divider>
+  <span class="px-2">ou</span>
+  <mat-divider class="flex-1"></mat-divider>
+</div>
+
+              <!-- Footer -->
+              <div class="pt-2 text-center text-sm text-gray-600">
+                <span>Pas de compte ?</span>
+                <button
+                  mat-button
+                  type="button"
+                  color="primary"
+                  class="!font-semibold"
+                  (click)="goRegister()"
+                >
+                  Créer un compte
+                </button>
+              </div>
+
+            </div>
+          </div>
+        </mat-card>
+
+      </div>
+    </div>

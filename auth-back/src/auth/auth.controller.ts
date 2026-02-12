@@ -1,11 +1,15 @@
-import { Body, Controller, Get, Post, Req, UseGuards, UnauthorizedException } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards, UnauthorizedException ,
+  UploadedFile,
+  UseInterceptors} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './jwt.guard';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -40,4 +44,21 @@ export class AuthController {
       avatar: user.avatar ?? null, // ✅ ne doit plus être rouge si schema OK
     };
   }
+  @UseGuards(JwtAuthGuard)
+    @Post('avatar')
+    @UseInterceptors(
+      FileInterceptor('file', {
+        storage: diskStorage({
+          destination: './uploads/avatars',
+          filename: (_, file, cb) => {
+            const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            cb(null, unique + extname(file.originalname));
+          },
+        }),
+      }),
+    )
+    uploadAvatar(@Req() req: any,@UploadedFile() file: Express.Multer.File) {
+      return this.auth.updateAvatar(req.user.id, `uploads/avatars/${file.filename}`);
+      
+    }
 }

@@ -40,10 +40,18 @@ export class AuthService {
   me(): Observable<User> {
     return this.http.get<User>(`${this.base}/me`);
   }
+uploadAvatar(file: File) {
+  const formData = new FormData();
+  formData.append('file', file); // ✅ important
 
-  logout(): void {
-    this.clearToken();
-  }
+  return this.http.post<any>(
+    `http://localhost:3000/auth/avatar`,
+    formData
+  );
+}
+  logout() {
+  localStorage.removeItem('token');
+}
 
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);

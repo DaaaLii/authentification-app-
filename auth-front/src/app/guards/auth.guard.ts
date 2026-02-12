@@ -5,9 +5,12 @@ import { AuthService } from '../services/auth';
 export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
   const auth = inject(AuthService);
+  
 
   const token = auth.getToken();
 
   if (token) return true;
   return router.createUrlTree(['/login']);
+  
+  
 };
