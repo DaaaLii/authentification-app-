@@ -1,7 +1,8 @@
-import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { IsArray, IsInt, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class CreateProductDto {
   @IsNotEmpty()
+  @IsString()
   name: string;
 
   @IsNumber()
@@ -13,9 +14,13 @@ export class CreateProductDto {
   @Min(0)
   stock?: number;
 
-
-  @IsOptional() 
+  @IsOptional()
   @IsString()
   image?: string;
-  
+
+  // ✅ NEW: assignation multiple
+  @IsOptional()
+  @IsArray()
+  @IsMongoId({ each: true })
+  assignedUsers?: string[];
 }

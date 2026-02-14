@@ -20,7 +20,7 @@ export class AuthService {
     const user = await this.usersService.create(email, password, name, avatar);
 
     // ✅ on renvoie aussi avatar
-    return this.signToken(user._id.toString(), user.email, user.name);
+    return this.signToken(user._id.toString(), user.email, user.name, user.role);
   }
 
 async updateAvatar(id: string, path: string) {
@@ -44,15 +44,15 @@ async updateAvatar(id: string, path: string) {
     if (!ok) throw new UnauthorizedException('Invalid credentials');
 
     // ✅ login renvoie avatar aussi
-    return this.signToken(user._id.toString(), user.email, user.name);
+    return this.signToken(user._id.toString(), user.email, user.name, user.role);
   }
 
-  private signToken(userId: string, email: string, name: string,avatar?: string) {
-    const payload = { id: userId, email, name };
+  private signToken(userId: string, email: string, name: string, role: 'admin' | 'user') {
+    const payload = { id: userId, email, name, role }; 
     
     return {
       access_token: this.jwtService.sign(payload),
-      user: { id: userId, email, name, avatar: avatar ?? null }, // ✅ on renvoie avatar aussi
+      user: { id: userId, email, name, role },
     };
   }
 }

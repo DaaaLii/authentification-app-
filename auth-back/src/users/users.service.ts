@@ -6,8 +6,18 @@ import { User, UserDocument } from './schema/users.schema';
 
 @Injectable()
 export class UsersService {
+ 
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+async findAll(filter: { role?: 'admin' | 'user' }) {
+    const query: any = {};
+    if (filter.role) query.role = filter.role;
 
+    return this.userModel
+      .find(query)
+      .select('_id name email role avatar') // ✅ pas de passwordHash
+      .sort({ name: 1 })
+      .lean();
+  }
   async findByEmail(email: string) {
     return this.userModel.findOne({ email: email.toLowerCase().trim() }).exec();
   }

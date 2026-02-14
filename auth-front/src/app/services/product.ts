@@ -66,7 +66,11 @@ export class ProductService {
     { params: httpParams }
   );
 }
-
+assignProduct(productId: string, userId: string, stock: number) {
+  return this.http.patch<any>(`${this.base}/${productId}/assign`, {
+    assignments: [{ userId, stock }],
+  });
+}
 
  
 

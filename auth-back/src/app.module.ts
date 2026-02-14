@@ -16,7 +16,7 @@ import { ProductsModule } from './products/products.module';
         uri: config.get<string>('MONGO_URI'),
       }),
     }),
-    AuthModule, UsersModule, ProductsModule],
+    AuthModule, UsersModule, ProductsModule,UsersModule,],
   controllers: [AppController],
   providers: [AppService],
 })
